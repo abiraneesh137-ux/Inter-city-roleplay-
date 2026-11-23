@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTER CITY ROLEPLAY | SA-MP Community</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050806;
+      --surface: #0c120e;
+      --green: #00ff66;
+      --green-dim: #10b981;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg);
+      color: #eef5f0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(0, 255, 102, 0.12), transparent 55%),
+        linear-gradient(to right, rgba(16, 185, 129, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+      overflow-x: hidden;
+    }
+
+    .font-display { font-family: 'Orbitron', sans-serif; }
+
+    /* Intro Screen */
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at center, #0c2416 0%, #040605 78%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+
+    #intro.hide {
+      opacity: 0;
+      transform: scale(1.06);
+      pointer-events: none;
+    }
+
+    .curl-main {
+      stroke-dasharray: 1300;
+      stroke-dashoffset: 1300;
+      animation: drawCurl 1.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .curl-sub {
+      stroke-dasharray: 1300;
+      stroke-dashoffset: 1300;
+      animation: drawCurl 2.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    }
+
+    @keyframes drawCurl {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .intro-pop {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: popUp 0.85s ease 0.95s forwards;
+    }
+
+    @keyframes popUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .glass-card {
+      background: linear-gradient(145deg, rgba(16, 26, 20, 0.92), rgba(9, 14, 11, 0.96));
+      border: 1px solid rgba(0, 255, 102, 0.18);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(0, 255, 102, 0.4);
+    }
+
+    .btn-neon {
+      background: linear-gradient(135deg, #00ff66, #10b981);
+      color: #041108;
+      box-shadow: 0 0 22px rgba(0, 255, 102, 0.35);
+    }
+
+    .btn-neon:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    /* Slide-out Chat Sidebar */
+    #chatDrawer {
+      transform: translateX(100%);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #chatDrawer.open {
+      transform: translateX(0);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-5 z-[10000] hidden bg-[#0d1d14] text-[#00ff66] border border-[#00ff66]/50 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl"></div>
+
+  <!-- 1. CURLY BLACK & GREEN INTRO -->
+  <div id="intro">
+    <svg class="w-80 h-44 sm:w-[480px] sm:h-56 mb-3" viewBox="0 0 600 240" fill="none">
+      <defs>
+        <linearGradient id="icrpGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#042f1a" />
+          <stop offset="50%" stop-color="#00ff66" />
+          <stop offset="100%" stop-color="#34d399" />
+        </linearGradient>
+        <linearGradient id="icrpGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#00ff66" />
+          <stop offset="100%" stop-color="#021f13" />
+        </linearGradient>
+      </defs>
+      <path class="curl-main" d="M25,175 C115,15 185,235 300,120 C415,5 485,225 575,65"
+            stroke="url(#icrpGrad1)" stroke-width="6.5" stroke-linecap="round" />
+      <path class="curl-sub" d="M45,85 C155,235 235,15 335,135 C435,255 495,35 560,155"
+            stroke="url(#icrpGrad2)" stroke-width="3.5" stroke-linecap="round" opacity="0.85" />
+      <path class="curl-sub" d="M175,120 C205,55 275,55 300,120 C325,185 395,185 425,120"
+            stroke="#00ff66" stroke-width="2" stroke-dasharray="6 6" />
+    </svg>
+
+    <h1 class="intro-pop font-display text-2xl sm:text-5xl font-black tracking-wider text-white text-center px-4 drop-shadow-[0_0_24px_rgba(0,255,102,0.55)]">
+      INTER CITY <span class="text-[#00ff66]">ROLEPLAY</span>
+    </h1>
+    <p class="intro-pop text-[11px] sm:text-xs tracking-[0.35em] text-emerald-400 uppercase mt-2">
+      San Andreas Multiplayer
+    </p>
+    <button type="button" onclick="closeIntro()" class="intro-pop mt-7 text-xs text-gray-400 hover:text-[#00ff66] underline">
+      Enter City &rarr;
+    </button>
+  </div>
+
+  <!-- 2. TOP NAVBAR -->
+  <nav class="sticky top-0 z-40 bg-[#050806]/85 backdrop-blur-xl border-b border-emerald-500/15">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-[#00ff66] shadow-[0_0_10px_#00ff66]"></span>
+        <span class="font-display font-extrabold text-sm sm:text-xl tracking-wide text-white">
+          INTER CITY <span class="text-[#00ff66]">RP</span>
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span id="playerTag" class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-[#00ff66] border border-emerald-500/30">
+          Guest Visitor
+        </span>
+
+        <button type="button" id="registerOpenBtn" onclick="openAuthModal()" class="bg-[#111c15] hover:bg-[#17271d] text-[#00ff66] border border-emerald-500/40 text-xs font-semibold px-3 py-2 rounded-lg transition">
+          Register / Sign In
+        </button>
+
+        <button type="button" id="signOutBtn" onclick="signOutPlayer()" class="hidden bg-red-950/60 hover:bg-red-900/60 text-red-300 border border-red-500/30 text-xs font-semibold px-3 py-2 rounded-lg transition">
+          Logout
+        </button>
+
+        <button type="button" onclick="toggleChatDrawer(true)" class="btn-neon font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center gap-1.5">
+          <span>Chat</span>
+          <span class="px-1.5 py-0.2 bg-black/25 rounded text-[10px]">Open</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 3. HERO BANNER -->
+  <header class="max-w-6xl mx-auto px-4 pt-8 pb-6 w-full">
+    <div class="glass-card rounded-2xl p-6 sm:p-9 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+      <div class="space-y-3 max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-semibold text-[#00ff66]">
+          <span class="w-2 h-2 rounded-full bg-[#00ff66] animate-ping"></span>
+          SA-MP COMMUNITY • INTER CITY ROLEPLAY
+        </div>
+        <h2 class="font-display text-2xl sm:text-4xl font-black text-white leading-tight">
+          OWN THE STREETS OF <span class="text-[#00ff66]">INTER CITY</span>
+        </h2>
+        <p class="text-sm sm:text-base text-gray-300/90 leading-relaxed">
+          Create your player account, join the Discord community, and slide open the live city chat sidebar to talk, share media, and coordinate roleplay.
+        </p>
+        <div class="pt-2 flex flex-wrap gap-3">
+          <a href="https://discord.gg/RgEQpYSYm" target="_blank" rel="noopener noreferrer" class="btn-neon inline-flex items-center font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition">
+            Join Official Discord &rarr;
+          </a>
+          <button type="button" onclick="toggleChatDrawer(true)" class="bg-emerald-500/15 hover:bg-emerald-500/25 text-[#00ff66] border border-emerald-500/40 text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition">
+            Open City Chat &rarr;
+          </button>
+          <button type="button" onclick="showIntro()" class="bg-white/5 hover:bg-white/10 text-gray-200 border border-white/10 text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">
+            Replay Intro
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 w-full lg:w-64 shrink-0">
+        <div class="bg-black/50 border border-emerald-500/20 rounded-xl p-4 text-center">
+          <div class="font-display text-xl sm:text-2xl font-extrabold text-[#00ff66]">148/200</div>
+          <div class="text-[11px] text-gray-400 mt-1">Active Citizens</div>
+        </div>
+        <div class="bg-black/50 border border-emerald-500/20 rounded-xl p-4 text-center">
+          <div class="font-display text-xl sm:text-2xl font-extrabold text-white">SFW</div>
+          <div class="text-[11px] text-gray-400 mt-1">18+ Protected</div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- PLAYER REGISTRATION / SIGN-IN MODAL -->
+  <div id="authModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md rounded-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="font-display text-base font-bold text-white">CITIZEN <span class="text-[#00ff66]">ACCOUNT</span></h3>
+        <button type="button" onclick="closeAuthModal()" class="text-gray-400 hover:text-white text-sm">✕</button>
+      </div>
+
+      <p class="text-xs text-gray-300 leading-relaxed">
+        Register your own player account to unlock sending messages, photos, and links in the City Chat sidebar.
+      </p>
+
+      <form id="playerAuthForm" class="space-y-3">
+        <div>
+          <label class="block text-xs text-gray-300 mb-1">Character / Player Username</label>
+          <input id="regUsername" type="text" minlength="3" maxlength="24" required placeholder="e.g., Arjun_V"
+                 class="w-full bg-black/70 border border-white/15 focus:border-[#00ff66] rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-300 mb-1">Password</label>
+          <input id="regPassword" type="password" minlength="4" required placeholder="Create or enter password"
+                 class="w-full bg-black/70 border border-white/15 focus:border-[#00ff66] rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+        </div>
+        <button type="submit" class="btn-neon w-full font-bold text-sm py-2.5 rounded-xl transition">
+          Register &amp; Enter Chat
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. MAIN CONTENT AREA -->
+  <main class="max-w-6xl mx-auto px-4 pb-16 w-full grid grid-cols-1 lg:grid-cols-3 gap-7">
+
+    <!-- LEFT / CENTER: COMMUNITY HIGHLIGHTS -->
+    <section class="lg:col-span-2 space-y-5">
+      <div class="flex items-center justify-between">
+        <h3 class="font-display text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+          <span class="w-1.5 h-6 rounded-full bg-[#00ff66]"></span>
+          CITY HIGHLIGHTS &amp; UPDATES
+        </h3>
+        <button type="button" onclick="toggleChatDrawer(true)" class="text-xs text-[#00ff66] hover:underline font-semibold">
+          Slide Open Chat &rarr;
+        </button>
+      </div>
+
+      <article class="glass-card rounded-2xl p-5 space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#00ff66] text-black">Official</span>
+          <span class="text-[11px] text-gray-400">Inter City Roleplay</span>
+        </div>
+        <h4 class="font-display text-base sm:text-lg font-bold text-white">Welcome to Inter City Roleplay</h4>
+        <p class="text-sm text-gray-300 leading-relaxed">
+          Register your own citizen account in seconds, connect with players on Discord, and open the side Chat Drawer to choose a chat mode and share messages, screenshots, or links.
+        </p>
+        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
+             alt="Inter City Roleplay" class="w-full max-h-80 object-cover rounded-xl border border-white/10" />
+        <div class="pt-1">
+          <a href="https://discord.gg/RgEQpYSYm" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-1.5 text-xs font-bold text-[#00ff66] hover:underline">
+            Join Our Official Discord Server &rarr;
+          </a>
+        </div>
+      </article>
+
+      <article class="glass-card rounded-2xl p-5 space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Community Rules</span>
+          <span class="text-[11px] text-gray-400">Safe &amp; Clean Chat</span>
+        </div>
+        <h4 class="font-display text-base sm:text-lg font-bold text-white">Chat Modes &amp; 18+ Content Policy</h4>
+        <p class="text-sm text-gray-300 leading-relaxed">
+          Registered players can switch between <strong>General City</strong>, <strong>Roleplay / OOC</strong>, <strong>Trade &amp; Factions</strong>, and <strong>Model Helper</strong> modes inside the slide-out sidebar. Any 18+ or explicit content is strictly blocked.
+        </p>
+      </article>
+    </section>
+
+    <!-- RIGHT COLUMN: QUICK HUB CARD -->
+    <aside class="space-y-6">
+      <div class="glass-card rounded-2xl p-5 space-y-3">
+        <h4 class="font-display text-xs font-bold tracking-wider uppercase text-white">Server Hub</h4>
+        <div class="space-y-2 text-xs text-gray-300">
+          <div class="flex justify-between py-1 border-b border-white/5">
+            <span class="text-gray-400">Server Name</span>
+            <span class="text-[#00ff66] font-semibold">Inter City Roleplay</span>
+          </div>
+          <div class="flex justify-between items-center gap-2 py-1 border-b border-white/5">
+            <span class="text-gray-400">Discord</span>
+            <a href="https://discord.gg/RgEQpYSYm" target="_blank" rel="noopener noreferrer" class="text-[#00ff66] hover:underline truncate">discord.gg/RgEQpYSYm</a>
+          </div>
+          <div class="flex justify-between py-1 border-b border-white/5">
+            <span class="text-gray-400">Chat Filter</span>
+            <span class="text-[#00ff66] font-semibold">No 18+ Allowed</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-400">Accounts</span>
+            <span class="text-emerald-300">Self-Registration</span>
+          </div>
+        </div>
+        <button type="button" onclick="toggleChatDrawer(true)" class="btn-neon w-full font-bold text-xs py-2.5 rounded-xl transition mt-2">
+          Open Side Chat Drawer
+        </button>
+      </div>
+    </aside>
+  </main>
+  <!-- FLOATING EDGE TAB TO SWIPE / TAP OPEN CHAT -->
+  <button type="button" onclick="toggleChatDrawer(true)"
+          class="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#0d1f15] hover:bg-[#132d1f] text-[#00ff66] border border-r-0 border-[#00ff66]/45 px-2.5 py-4 rounded-l-2xl shadow-lg flex flex-col items-center gap-1">
+    <span class="text-xs font-display font-bold [writing-mode:vertical-rl] rotate-180 tracking-widest">CITY CHAT</span>
+  </button>
+
+  <!-- BACKDROP FOR SIDEBAR -->
+  <div id="chatBackdrop" onclick="toggleChatDrawer(false)" class="fixed inset-0 z-40 hidden bg-black/70 backdrop-blur-xs"></div>
+
+  <!-- SLIDE-OUT RIGHT SIDEBAR CHAT -->
+  <aside id="chatDrawer" class="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-[#080d0a] border-l border-emerald-500/30 shadow-2xl flex flex-col">
+
+    <!-- Sidebar Header -->
+    <div class="px-4 py-3.5 bg-black/70 border-b border-white/10 flex items-center justify-between">
+      <div>
+        <h3 class="font-display text-sm font-extrabold text-white">INTER CITY <span class="text-[#00ff66]">CHAT</span></h3>
+        <p id="chatAccountStatus" class="text-[11px] text-gray-400">Register an account to send messages</p>
+      </div>
+      <button type="button" onclick="toggleChatDrawer(false)" class="bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-1.5 rounded-lg text-xs">
+        Close ✕
+      </button>
+    </div>
+
+    <!-- Horizontal Scrollable Chat Mode Selector -->
+    <div class="px-3 py-2.5 bg-[#0c140f] border-b border-white/10">
+      <div class="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 px-1">Scroll &amp; Select Chat Mode:</div>
+      <div id="modeScroller" class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+        <button type="button" data-mode="general" onclick="selectChatMode('general')"
+                class="mode-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#00ff66] text-black">
+          # General City
+        </button>
+        <button type="button" data-mode="rp" onclick="selectChatMode('rp')"
+                class="mode-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/10">
+          # Roleplay / OOC
+        </button>
+        <button type="button" data-mode="trade" onclick="selectChatMode('trade')"
+                class="mode-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/10">
+          # Trade &amp; Factions
+        </button>
+        <button type="button" data-mode="model" onclick="selectChatMode('model')"
+                class="mode-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/10">
+          # Model Chat
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Chat Messages Feed -->
+    <div id="drawerMessages" class="flex-1 p-4 space-y-3 overflow-y-auto text-xs"></div>
+
+    <!-- Locked Notice (Shown when not registered) -->
+    <div id="chatLockedBanner" class="p-4 bg-black/80 border-t border-white/10 text-center space-y-2.5">
+      <p class="text-xs text-gray-300">Only registered players can send messages in City Chat.</p>
+      <button type="button" onclick="toggleChatDrawer(false); openAuthModal();" class="btn-neon w-full font-bold text-xs py-2.5 rounded-xl transition">
+        Register Player Account Now
+      </button>
+    </div>
+
+    <!-- Chat Composer (Shown once Player Registers) -->
+    <form id="drawerChatForm" class="hidden p-3 bg-black/85 border-t border-white/10 space-y-2">
+      <div class="grid grid-cols-2 gap-2">
+        <input id="chatMediaUrl" type="url" placeholder="Optional Photo URL (https://...)"
+               class="bg-[#0d1510] border border-white/15 focus:border-[#00ff66] rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none" />
+        <input id="chatLinkUrl" type="url" placeholder="Optional Link (https://...)"
+               class="bg-[#0d1510] border border-white/15 focus:border-[#00ff66] rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none" />
+      </div>
+
+      <div class="flex gap-2">
+        <input id="drawerInput" type="text" placeholder="Write message (No 18+ content)..."
+               class="flex-1 bg-[#0d1510] border border-white/15 focus:border-[#00ff66] rounded-xl px-3 py-2 text-xs text-white focus:outline-none" />
+        <button type="submit" class="btn-neon font-bold text-xs px-4 py-2 rounded-xl transition">
+          Send
+        </button>
+      </div>
+    </form>
+  </aside>
+  <script>
+    let currentPlayer = null;
+    let activeMode = 'general';
+
+    // Stored registered accounts in localStorage so players stay registered on their device
+    const STORAGE_USERS_KEY = 'icrp_registered_players_v1';
+    const STORAGE_SESSION_KEY = 'icrp_active_player_v1';
+
+    // Basic 18+ / NSFW keyword blocklist
+    const BLOCKED_18_PLUS = [
+      'porn', 'xxx', 'nsfw', 'nude', 'nudes', 'sex', 'hentai', 'onlyfans',
+      'erotic', '18+', 'adult video', 'boobs', 'pussy', 'dick', 'cock', 'fuck', 'bitch'
+    ];
+
+    const modeLabels = {
+      general: 'General City',
+      rp: 'Roleplay / OOC',
+      trade: 'Trade & Factions',
+      model: 'Model Chat'
+    };
+
+    const messagesByMode = {
+      general: [
+        { user: 'System', text: 'Welcome to General City chat! Keep all messages clean (no 18+ content).', photo: '', link: 'https://discord.gg/RgEQpYSYm', time: 'Live' }
+      ],
+      rp: [
+        { user: 'System', text: 'Discuss character stories, scenes, and OOC coordination here.', photo: '', link: '', time: 'Live' }
+      ],
+      trade: [
+        { user: 'System', text: 'Post in-city vehicle trades, properties, and faction recruitment.', photo: '', link: '', time: 'Live' }
+      ],
+      model: [
+        { user: 'Model Bot', text: 'Ask anything about Inter City Roleplay, factions, or server setup!', photo: '', link: '', time: 'Live' }
+      ]
+    };
+
+    function escapeHTML(val) {
+      const div = document.createElement('div');
+      div.textContent = String(val ?? '');
+      return div.innerHTML;
+    }
+
+    function validHttpUrl(raw) {
+      if (!raw) return '';
+      try {
+        const parsed = new URL(raw);
+        return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? parsed.href : '';
+      } catch {
+        return '';
+      }
+    }
+
+    function contains18PlusContent(text) {
+      const lower = text.toLowerCase();
+      return BLOCKED_18_PLUS.some((word) => {
+        const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const pattern = new RegExp(`(^|\\W)${escaped}(\\W|$)`, 'i');
+        return pattern.test(lower);
+      });
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(window.__icrpToast);
+      window.__icrpToast = setTimeout(() => el.classList.add('hidden'), 2600);
+    }
+
+    function closeIntro() {
+      const intro = document.getElementById('intro');
+      if (intro) intro.classList.add('hide');
+    }
+
+    function showIntro() {
+      const intro = document.getElementById('intro');
+      if (intro) {
+        intro.classList.remove('hide');
+        setTimeout(closeIntro, 2800);
+      }
+    }
+
+    function openAuthModal() {
+      const modal = document.getElementById('authModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('authModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function toggleChatDrawer(open) {
+      const drawer = document.getElementById('chatDrawer');
+      const backdrop = document.getElementById('chatBackdrop');
+      if (open) {
+        drawer.classList.add('open');
+        backdrop.classList.remove('hidden');
+      } else {
+        drawer.classList.remove('open');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    // Touch swipe from right edge to open / swipe right to close sidebar
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (touchStartX > window.innerWidth - 45 && diff > 55) {
+        toggleChatDrawer(true);
+      } else if (diff < -75) {
+        toggleChatDrawer(false);
+      }
+    }, { passive: true });
+
+    // Player Self-Registration & Sign-In
+    document.getElementById('playerAuthForm').addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+
+      if (username.length < 3 || password.length < 4) {
+        showToast('Enter valid username & password');
+        return;
+      }
+
+      if (contains18PlusContent(username)) {
+        showToast('18+ usernames are not allowed');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem(STORAGE_USERS_KEY) || '{}');
+      const key = username.toLowerCase();
+
+      if (users[key] && users[key].password !== password) {
+        showToast('Wrong password for existing player');
+        return;
+      }
+
+      users[key] = { username, password };
+      localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
+      localStorage.setItem(STORAGE_SESSION_KEY, username);
+
+      currentPlayer = username;
+      document.getElementById('regPassword').value = '';
+      closeAuthModal();
+      updatePlayerUI();
+      toggleChatDrawer(true);
+      showToast('Welcome, ' + username + '!');
+    });
+
+    function signOutPlayer() {
+      currentPlayer = null;
+      localStorage.removeItem(STORAGE_SESSION_KEY);
+      updatePlayerUI();
+      showToast('Signed out');
+    }
+
+    function updatePlayerUI() {
+      const tag = document.getElementById('playerTag');
+      const regBtn = document.getElementById('registerOpenBtn');
+      const outBtn = document.getElementById('signOutBtn');
+      const chatStatus = document.getElementById('chatAccountStatus');
+      const lockedBox = document.getElementById('chatLockedBanner');
+      const chatForm = document.getElementById('drawerChatForm');
+
+      if (currentPlayer) {
+        tag.textContent = 'Citizen: ' + currentPlayer;
+        regBtn.classList.add('hidden');
+        outBtn.classList.remove('hidden');
+        chatStatus.textContent = 'Signed in as ' + currentPlayer + ' • ' + modeLabels[activeMode];
+        lockedBox.classList.add('hidden');
+        chatForm.classList.remove('hidden');
+      } else {
+        tag.textContent = 'Guest Visitor';
+        regBtn.classList.remove('hidden');
+        outBtn.classList.add('hidden');
+        chatStatus.textContent = 'Register an account to send messages';
+        lockedBox.classList.remove('hidden');
+        chatForm.classList.add('hidden');
+      }
+    }
+
+    function selectChatMode(mode) {
+      if (!messagesByMode[mode]) return;
+      activeMode = mode;
+
+      document.querySelectorAll('.mode-pill').forEach((btn) => {
+        const isSelected = btn.getAttribute('data-mode') === mode;
+        btn.className = isSelected
+          ? 'mode-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#00ff66] text-black'
+          : 'mode-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/10';
+      });
+
+      updatePlayerUI();
+      renderDrawerMessages();
+    }
+
+    document.getElementById('drawerChatForm').addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      if (!currentPlayer) {
+        showToast('Please register your account first');
+        return;
+      }
+
+      const textEl = document.getElementById('drawerInput');
+      const mediaEl = document.getElementById('chatMediaUrl');
+      const linkEl = document.getElementById('chatLinkUrl');
+
+      const text = textEl.value.trim();
+      const photo = validHttpUrl(mediaEl.value.trim());
+      const link = validHttpUrl(linkEl.value.trim());
+
+      if (!text && !photo && !link) {
+        showToast('Write a message or attach a valid link/photo');
+        return;
+      }
+
+      // Block 18+ content across text, photo URL, and link URL
+      if (contains18PlusContent(`${text} ${photo} ${link}`)) {
+        showToast('Blocked: 18+ content is not allowed!');
+        return;
+      }
+
+      messagesByMode[activeMode].push({
+        user: currentPlayer,
+        text,
+        photo,
+        link,
+        time: 'Just now'
+      });
+
+      if (activeMode === 'model' && text) {
+        messagesByMode.model.push({
+          user: 'Model Bot',
+          text: `Hey ${currentPlayer}! For "${text}", check our Discord (discord.gg/RgEQpYSYm) or coordinate with citizens in General City chat.`,
+          photo: '',
+          link: '',
+          time: 'Auto'
+        });
+      }
+
+      textEl.value = '';
+      mediaEl.value = '';
+      linkEl.value = '';
+      renderDrawerMessages();
+    });
+
+    function renderDrawerMessages() {
+      const box = document.getElementById('drawerMessages');
+      const list = messagesByMode[activeMode] || [];
+
+      box.innerHTML = list.map((m) => `
+        <div class="bg-[#0e1712] border border-white/10 rounded-2xl p-3 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-[#00ff66]">${escapeHTML(m.user)}</span>
+            <span class="text-[10px] text-gray-400">${escapeHTML(m.time)}</span>
+          </div>
+          ${m.text ? `<p class="text-gray-200 leading-relaxed break-words">${escapeHTML(m.text)}</p>` : ''}
+          ${m.photo ? `<img src="${escapeHTML(m.photo)}" alt="Shared media" class="w-full max-h-48 object-cover rounded-xl border border-white/10 mt-1" />` : ''}
+          ${m.link ? `<a href="${escapeHTML(m.link)}" target="_blank" rel="noopener noreferrer" class="inline-block text-[11px] font-semibold text-[#00ff66] hover:underline break-all">${escapeHTML(m.link)} &rarr;</a>` : ''}
+        </div>
+      `).join('');
+
+      box.scrollTop = box.scrollHeight;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedPlayer = localStorage.getItem(STORAGE_SESSION_KEY);
+      if (savedPlayer) currentPlayer = savedPlayer;
+      updatePlayerUI();
+      renderDrawerMessages();
+      setTimeout(closeIntro, 2900);
+    });
+  </script>
+</body>
+</html>
